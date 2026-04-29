@@ -3,47 +3,46 @@ Q1a)
 #include <iostream>
 using namespace std;
 
-class Rectangle
-{
-private:
+class Rectangle {
     float length, width;
-
 public:
-    void setlength(float l)
-    {
-        length = l;
-    }
-
-    void setwidth(float w)
-    {
-        width = w;
-    }
-
-    float perimeter()
-    {
-        return 2 * (length + width);
-    }
-
-    float area()
-    {
-        return length * width;
-    }
-
-    void show()
-    {
+    void setlength(float l) { length = l; }
+    void setwidth(float w) { width = w; }
+    float perimeter() { return 2 * (length + width); }
+    float area() { return length * width; }
+    void show() {
         cout << "Length: " << length << " Width: " << width << endl;
     }
 };
 
-int main()
-{
+class time {
+    int hours, minutes, seconds;
+public:
+    void settime(int h, int m, int s) {
+        hours = h;
+        minutes = m;
+        seconds = s;
+    }
+    void showtime() {
+        cout << hours << ":" << minutes << ":" << seconds << endl;
+    }
+    time add(time t) {
+        time temp;
+        temp.seconds = seconds + t.seconds;
+        temp.minutes = minutes + t.minutes + temp.seconds / 60;
+        temp.seconds %= 60;
+        temp.hours = hours + t.hours + temp.minutes / 60;
+        temp.minutes %= 60;
+        return temp;
+    }
+};
+
+int main() {
     Rectangle r1, r2;
-
-    r1.setlength(10.5);
-    r1.setwidth(5.2);
-
+    r1.setlength(5.5);
+    r1.setwidth(3.2);
     r2.setlength(7.0);
-    r2.setwidth(3.5);
+    r2.setwidth(4.5);
 
     r1.show();
     cout << "Area: " << r1.area() << endl;
@@ -53,57 +52,17 @@ int main()
     cout << "Area: " << r2.area() << endl;
     cout << "Perimeter: " << r2.perimeter() << endl;
 
-    return 0;
-}
-b)
-#include <iostream>
-using namespace std;
-
-class time
-{
-private:
-    int h, m, s;
-
-public:
-    void settime(int hh, int mm, int ss)
-    {
-        h = hh;
-        m = mm;
-        s = ss;
-    }
-
-    void showtime()
-    {
-        cout << h << ":" << m << ":" << s << endl;
-    }
-
-    time add(time t)
-    {
-        time temp;
-
-        temp.s = s + t.s;
-        temp.m = m + t.m + temp.s / 60;
-        temp.s = temp.s % 60;
-
-        temp.h = h + t.h + temp.m / 60;
-        temp.m = temp.m % 60;
-
-        return temp;
-    }
-};
-
-int main()
-{
     time t1, t2, t3;
-
     t1.settime(2, 45, 50);
     t2.settime(3, 20, 30);
 
-    t3 = t1.add(t2);
-
+    cout << "Time 1: ";
     t1.showtime();
+    cout << "Time 2: ";
     t2.showtime();
-    cout << "After Addition: ";
+
+    t3 = t1.add(t2);
+    cout << "Added Time: ";
     t3.showtime();
 
     return 0;
