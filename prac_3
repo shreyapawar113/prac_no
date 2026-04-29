@@ -1,0 +1,256 @@
+slip 3
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Time24;
+
+class Time12
+{
+private:
+    int hh, mm, ss;
+    char period[3];
+
+public:
+    Time12(int h = 12, int m = 0, int s = 0, const char* p = "AM")
+    {
+        hh = h;
+        mm = m;
+        ss = s;
+        strcpy(period, p);
+    }
+
+    inline void setHour(int h) { hh = h; }
+    inline void setMin(int m) { mm = m; }
+    inline void setSec(int s) { ss = s; }
+    inline void setPeriod(const char* p) { strcpy(period, p); }
+
+    inline int getHour() { return hh; }
+    inline int getMin() { return mm; }
+    inline int getSec() { return ss; }
+    inline const char* getPeriod() { return period; }
+
+    void display()
+    {
+        cout << hh << ":" << mm << ":" << ss << " " << period << endl;
+    }
+
+    friend void convertTo24(Time12, Time24&);
+    friend void compare(Time12, Time24);
+};
+
+class Time24
+{
+private:
+    int hh, mm, ss;
+
+public:
+    Time24(int h = 0, int m = 0, int s = 0)
+    {
+        hh = h;
+        mm = m;
+        ss = s;
+    }
+
+    inline void setHour(int h) { hh = h; }
+    inline void setMin(int m) { mm = m; }
+    inline void setSec(int s) { ss = s; }
+
+    inline int getHour() { return hh; }
+    inline int getMin() { return mm; }
+    inline int getSec() { return ss; }
+
+    void display()
+    {
+        cout << hh << ":" << mm << ":" << ss << endl;
+    }
+
+    friend void convertTo12(Time24, Time12&);
+    friend void compare(Time12, Time24);
+};
+
+void convertTo24(Time12 t12, Time24 &t24)
+{
+    int h = t12.hh;
+
+    if (strcmp(t12.period, "PM") == 0 && h != 12)
+        h += 12;
+    if (strcmp(t12.period, "AM") == 0 && h == 12)
+        h = 0;
+
+    t24.hh = h;
+    t24.mm = t12.mm;
+    t24.ss = t12.ss;
+}
+
+void convertTo12(Time24 t24, Time12 &t12)
+{
+    int h = t24.hh;
+    char p[3];
+
+    if (h == 0)
+    {
+        h = 12;
+        strcpy(p, "AM");
+    }
+    else if (h < 12)
+    {
+        strcpy(p, "AM");
+    }
+    else if (h == 12)
+    {
+        strcpy(p, "PM");
+    }
+    else
+    {
+        h -= 12;
+        strcpy(p, "PM");
+    }
+
+    t12.hh = h;
+    t12.mm = t24.mm;
+    t12.ss = t24.ss;
+    strcpy(t12.period, p);
+}
+
+void compare(Time12 t12, Time24 t24)
+{
+    Time24 temp;
+    convertTo24(t12, temp);
+
+    if (temp.hh == t24.hh && temp.mm == t24.mm && temp.ss == t24.ss)
+        cout << "Times are equal" << endl;
+    else
+        cout << "Times are not equal" << endl;
+}
+
+int main()
+{
+    Time12 t12(10, 30, 0, "PM");
+    Time24 t24;
+
+    convertTo24(t12, t24);
+    t24.display();
+
+    Time12 t12b;
+    convertTo12(t24, t12b);
+    t12b.display();
+
+    compare(t12, t24);
+
+    return 0;
+}
+
+SLIP 3 DBMS
+CREATE DATABASE bankdb;
+USE bankdb;
+
+CREATE TABLE BRANCH (
+    BID INT,
+    BRNAME CHAR(30),
+    BRCITY CHAR(10)
+);
+
+CREATE TABLE CUSTOMER (
+    CNO INT,
+    CNAME CHAR(20),
+    CADDR CHAR(35),
+    CITY CHAR(20)
+);
+
+CREATE TABLE LOAN_APPLICATION (
+    LNO INT,
+    LAMTREQUIRED DECIMAL(10,2),
+    LAMTAPPROVED DECIMAL(10,2),
+    L_DATE DATE
+);
+
+CREATE TABLE TERNARY (
+    BID INT,
+    CNO INT,
+    LNO INT
+);
+
+INSERT INTO BRANCH VALUES
+(1, 'Aundh Branch', 'Pune'),
+(2, 'Shivaji Nagar', 'Pune');
+
+INSERT INTO CUSTOMER VALUES
+(101, 'Amit', 'Aundh', 'Pune'),
+(102, 'Ravi', 'Baner', 'Pune');
+
+INSERT INTO LOAN_APPLICATION VALUES
+(1001, 50000, 40000, '2024-01-10'),
+(1002, 70000, 70000, '2024-02-15');
+
+INSERT INTO TERNARY VALUES
+(1, 101, 1001),
+(2, 102, 1002);
+
+a)
+DELIMITER $$
+
+CREATE FUNCTION maxApproved()
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE maxval DECIMAL(10,2);
+
+    SELECT MAX(LAMTAPPROVED) INTO maxval
+    FROM LOAN_APPLICATION;
+
+    RETURN maxval;
+END $$
+
+b)
+DELIMITER $$
+
+CREATE TRIGGER check_loan
+BEFORE INSERT ON LOAN_APPLICATION
+FOR EACH ROW
+BEGIN
+    IF NEW.LAMTAPPROVED < NEW.LAMTREQUIRED THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Approved amount less than required';
+    END IF;
+END $$
+
+c)
+DELIMITER $$
+
+CREATE PROCEDURE customerAundh()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE cno INT;
+    DECLARE cname CHAR(20);
+    DECLARE caddr CHAR(35);
+    DECLARE city CHAR(20);
+
+    DECLARE cur CURSOR FOR
+        SELECT C.CNO, C.CNAME, C.CADDR, C.CITY
+        FROM CUSTOMER C
+        JOIN TERNARY T ON C.CNO = T.CNO
+        JOIN BRANCH B ON T.BID = B.BID
+        WHERE B.BRNAME = 'Aundh Branch';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO cno, cname, caddr, city;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT cno, cname, caddr, city;
+    END LOOP;
+
+    CLOSE cur;
+END $$
+
+
+
+
