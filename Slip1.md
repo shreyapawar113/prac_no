@@ -1,0 +1,148 @@
+slip 1 cpp
+
+#include<iostream>
+using namespace std;
+
+class Fraction
+{
+    int numerator;
+    int denominator;
+
+    int gcd(int a, int b)
+    {
+        if(b==0)
+            return a;
+        return gcd(b, a%b);
+    }
+
+public:
+    Fraction()
+    {
+        numerator = 0;
+        denominator = 1;
+    }
+
+    Fraction(int n, int d)
+    {
+        int g = gcd(n,d);
+        numerator = n/g;
+        denominator = d/g;
+    }
+
+    void display()
+    {
+        cout<<numerator<<"/"<<denominator<<endl;
+    }
+};
+
+int main()
+{
+    Fraction f1;
+    Fraction f2(8,4);
+
+    f1.display();
+    f2.display();
+
+    return 0;
+}
+
+slip 1 DBMS 
+Q2
+CREATE DATABASE travel;
+USE travel;
+
+CREATE TABLE Route (
+    route_no INT,
+    source VARCHAR(50),
+    destination VARCHAR(50),
+    no_of_station INT
+);
+
+CREATE TABLE Bus (
+    bus_no INT,
+    capacity INT,
+    depot_name VARCHAR(50)
+);
+
+CREATE TABLE Route_Bus (
+    route_no INT,
+    bus_no INT
+);
+INSERT INTO Route VALUES
+(1, 'swargate', 'sangvi', 10),
+(2, 'pune station', 'hinjewadi', 15),
+(3, 'swargate', 'kothrud', 8);
+
+INSERT INTO Bus VALUES
+(101, 50, 'swargate depot'),
+(102, 40, 'pimpri depot'),
+(103, 60, 'nigdi depot');
+
+INSERT INTO Route_Bus VALUES
+(1, 101),
+(1, 102),
+(2, 103),
+(3, 101);
+
+a)
+
+CREATE FUNCTION getBusDetails()
+RETURNS VARCHAR(500)
+DETERMINISTIC
+BEGIN
+    DECLARE result VARCHAR(500);
+
+    SELECT GROUP_CONCAT(B.bus_no)
+    INTO result
+    FROM Bus B
+    JOIN Route_Bus RB ON B.bus_no = RB.bus_no
+    JOIN Route R ON RB.route_no = R.route_no
+    WHERE R.source = 'swargate' AND R.destination = 'sangvi';
+
+    RETURN result;
+END $$
+
+
+b)
+DELIMITER $$
+
+CREATE PROCEDURE routeDetails()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE r_no INT;
+    DECLARE src VARCHAR(50);
+    DECLARE dest VARCHAR(50);
+    DECLARE stations INT;
+
+    DECLARE cur CURSOR FOR 
+        SELECT * FROM Route WHERE route_no = 2;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO r_no, src, dest, stations;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT r_no, src, dest, stations;
+    END LOOP;
+
+    CLOSE cur;
+END $$
+
+c)
+DELIMITER $$
+
+CREATE TRIGGER check_route_no
+BEFORE INSERT ON Route
+FOR EACH ROW
+BEGIN
+    IF NEW.route_no <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid route number';
+    END IF;
+END $$
