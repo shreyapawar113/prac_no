@@ -2,109 +2,96 @@ slip 9
 #include <iostream>
 using namespace std;
 
-class Clock
-{
-private:
+class Clock {
     int h, m, s;
 
-    void normalize()
-    {
-        if (s >= 60) { m += s / 60; s %= 60; }
-        if (m >= 60) { h += m / 60; m %= 60; }
-        if (h >= 24) { h %= 24; }
+    void normalize() {
+        if (s >= 60) {
+            m += s / 60;
+            s %= 60;
+        }
+        if (m >= 60) {
+            h += m / 60;
+            m %= 60;
+        }
+        if (h >= 24) h %= 24;
 
-        if (s < 0)
-        {
-            int borrow = (abs(s) + 59) / 60;
-            m -= borrow;
-            s += borrow * 60;
+        if (s < 0) {
+            m -= (abs(s) / 60) + 1;
+            s = 60 - (abs(s) % 60);
         }
-        if (m < 0)
-        {
-            int borrow = (abs(m) + 59) / 60;
-            h -= borrow;
-            m += borrow * 60;
+        if (m < 0) {
+            h -= (abs(m) / 60) + 1;
+            m = 60 - (abs(m) % 60);
         }
-        if (h < 0)
-        {
-            h = (h % 24 + 24) % 24;
-        }
+        if (h < 0) h = (24 + h % 24) % 24;
     }
 
 public:
-    Clock()
-    {
-        h = 0; m = 0; s = 0;
-    }
+    Clock() { h = m = s = 0; }
 
-    Clock(int hh, int mm, int ss)
-    {
-        h = hh; m = mm; s = ss;
+    Clock(int hh, int mm, int ss) {
+        h = hh;
+        m = mm;
+        s = ss;
         normalize();
     }
 
-    Clock operator++()
-    {
+    Clock operator++() {
         s++;
         normalize();
         return *this;
     }
 
-    Clock operator++(int)
-    {
+    Clock operator++(int) {
         Clock temp = *this;
         s++;
         normalize();
         return temp;
     }
 
-    Clock operator--()
-    {
+    Clock operator--() {
         s--;
         normalize();
         return *this;
     }
 
-    Clock operator--(int)
-    {
+    Clock operator--(int) {
         Clock temp = *this;
         s--;
         normalize();
         return temp;
     }
 
-    friend istream& operator>>(istream &in, Clock &c)
-    {
+    friend istream& operator>>(istream &in, Clock &c) {
         in >> c.h >> c.m >> c.s;
         c.normalize();
         return in;
     }
 
-    friend ostream& operator<<(ostream &out, Clock &c)
-    {
+    friend ostream& operator<<(ostream &out, Clock &c) {
         out << c.h << ":" << c.m << ":" << c.s;
         return out;
     }
 };
 
-int main()
-{
-    Clock c1(23, 59, 58);
+int main() {
+    Clock c1, c2(10, 59, 58);
 
-    cout << "Initial: " << c1 << endl;
-
-    ++c1;
-    cout << "After ++: " << c1 << endl;
-
-    c1++;
-    cout << "After postfix ++: " << c1 << endl;
-
-    --c1;
-    cout << "After --: " << c1 << endl;
-
-    cout << "Enter time (h m s): ";
     cin >> c1;
-    cout << "You entered: " << c1 << endl;
+    cout << c1 << endl;
+
+    ++c2;
+    cout << c2 << endl;
+
+    c2++;
+    cout << c2 << endl;
+
+    --c2;
+    cout << c2 << endl;
+
+    c2--;
+    cout << c2 << endl;
 
     return 0;
 }
