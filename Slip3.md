@@ -11,34 +11,33 @@ class Time12
 {
 private:
     int hh, mm, ss;
-    char period[3];
+    char ap[3];
 
 public:
-    Time12(int h = 12, int m = 0, int s = 0, const char* p = "AM")
+    Time12(int h=12,int m=0,int s=0,const char* p="AM")
     {
-        hh = h;
-        mm = m;
-        ss = s;
-        strcpy(period, p);
+        hh=h; mm=m; ss=s;
+        strcpy(ap,p);
     }
 
-    inline void setHour(int h) { hh = h; }
-    inline void setMin(int m) { mm = m; }
-    inline void setSec(int s) { ss = s; }
-    inline void setPeriod(const char* p) { strcpy(period, p); }
+    inline int getH(){ return hh; }
+    inline int getM(){ return mm; }
+    inline int getS(){ return ss; }
+    inline char* getAP(){ return ap; }
 
-    inline int getHour() { return hh; }
-    inline int getMin() { return mm; }
-    inline int getSec() { return ss; }
-    inline const char* getPeriod() { return period; }
+    inline void setH(int h){ hh=h; }
+    inline void setM(int m){ mm=m; }
+    inline void setS(int s){ ss=s; }
+    inline void setAP(const char* p){ strcpy(ap,p); }
 
     void display()
     {
-        cout << hh << ":" << mm << ":" << ss << " " << period << endl;
+        cout<<hh<<":"<<mm<<":"<<ss<<" "<<ap<<endl;
     }
 
-    friend void convertTo24(Time12, Time24&);
-    friend void compare(Time12, Time24);
+    friend void to24(Time12,Time24&);
+    friend void to12(Time24,Time12&);
+    friend void compare(Time12,Time24);
 };
 
 class Time24
@@ -47,98 +46,80 @@ private:
     int hh, mm, ss;
 
 public:
-    Time24(int h = 0, int m = 0, int s = 0)
+    Time24(int h=0,int m=0,int s=0)
     {
-        hh = h;
-        mm = m;
-        ss = s;
+        hh=h; mm=m; ss=s;
     }
 
-    inline void setHour(int h) { hh = h; }
-    inline void setMin(int m) { mm = m; }
-    inline void setSec(int s) { ss = s; }
+    inline int getH(){ return hh; }
+    inline int getM(){ return mm; }
+    inline int getS(){ return ss; }
 
-    inline int getHour() { return hh; }
-    inline int getMin() { return mm; }
-    inline int getSec() { return ss; }
+    inline void setH(int h){ hh=h; }
+    inline void setM(int m){ mm=m; }
+    inline void setS(int s){ ss=s; }
 
     void display()
     {
-        cout << hh << ":" << mm << ":" << ss << endl;
+        cout<<hh<<":"<<mm<<":"<<ss<<endl;
     }
 
-    friend void convertTo12(Time24, Time12&);
-    friend void compare(Time12, Time24);
+    friend void to24(Time12,Time24&);
+    friend void to12(Time24,Time12&);
+    friend void compare(Time12,Time24);
 };
 
-void convertTo24(Time12 t12, Time24 &t24)
+void to24(Time12 t12, Time24 &t24)
 {
-    int h = t12.hh;
+    int h=t12.hh;
+    if(strcmp(t12.ap,"PM")==0 && h!=12) h+=12;
+    if(strcmp(t12.ap,"AM")==0 && h==12) h=0;
 
-    if (strcmp(t12.period, "PM") == 0 && h != 12)
-        h += 12;
-    if (strcmp(t12.period, "AM") == 0 && h == 12)
-        h = 0;
-
-    t24.hh = h;
-    t24.mm = t12.mm;
-    t24.ss = t12.ss;
+    t24.hh=h;
+    t24.mm=t12.mm;
+    t24.ss=t12.ss;
 }
 
-void convertTo12(Time24 t24, Time12 &t12)
+void to12(Time24 t24, Time12 &t12)
 {
-    int h = t24.hh;
+    int h=t24.hh;
     char p[3];
 
-    if (h == 0)
-    {
-        h = 12;
-        strcpy(p, "AM");
-    }
-    else if (h < 12)
-    {
-        strcpy(p, "AM");
-    }
-    else if (h == 12)
-    {
-        strcpy(p, "PM");
-    }
-    else
-    {
-        h -= 12;
-        strcpy(p, "PM");
-    }
+    if(h==0){ h=12; strcpy(p,"AM"); }
+    else if(h<12){ strcpy(p,"AM"); }
+    else if(h==12){ strcpy(p,"PM"); }
+    else{ h-=12; strcpy(p,"PM"); }
 
-    t12.hh = h;
-    t12.mm = t24.mm;
-    t12.ss = t24.ss;
-    strcpy(t12.period, p);
+    t12.hh=h;
+    t12.mm=t24.mm;
+    t12.ss=t24.ss;
+    strcpy(t12.ap,p);
 }
 
 void compare(Time12 t12, Time24 t24)
 {
     Time24 temp;
-    convertTo24(t12, temp);
+    to24(t12,temp);
 
-    if (temp.hh == t24.hh && temp.mm == t24.mm && temp.ss == t24.ss)
-        cout << "Times are equal" << endl;
+    if(temp.hh==t24.hh && temp.mm==t24.mm && temp.ss==t24.ss)
+        cout<<"Equal"<<endl;
     else
-        cout << "Times are not equal" << endl;
+        cout<<"Not Equal"<<endl;
 }
 
 int main()
 {
-    Time12 t12(10, 30, 0, "PM");
+    Time12 t12(10,30,0,"PM");
     Time24 t24;
 
-    convertTo24(t12, t24);
+    to24(t12,t24);
     t24.display();
 
     Time12 t12b;
-    convertTo12(t24, t12b);
+    to12(t24,t12b);
     t12b.display();
 
-    compare(t12, t24);
+    compare(t12,t24);
 
     return 0;
 }
