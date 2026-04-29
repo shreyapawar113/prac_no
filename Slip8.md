@@ -1,140 +1,128 @@
 Slip8
 #include <iostream>
 #include <cstring>
-#include <cctype>
 using namespace std;
 
-class Book
-{
-private:
+class Book {
     char *title;
     int authors;
     char *isbn;
     float price;
     int copies;
 
-    int isValidISBN(const char *num)
-    {
-        int len = strlen(num);
-
-        if (len == 10)
-        {
-            int sum = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                if (!isdigit(num[i])) return 0;
-                sum += (num[i] - '0') * (10 - i);
-            }
-            return (sum % 11 == 0);
-        }
-        else if (len == 13)
-        {
-            int sum = 0;
-            for (int i = 0; i < 13; i++)
-            {
-                if (!isdigit(num[i])) return 0;
-
-                if (i % 2 == 0)
-                    sum += (num[i] - '0') * 1;
-                else
-                    sum += (num[i] - '0') * 3;
-            }
-            return (sum % 10 == 0);
-        }
-        return 0;
-    }
-
 public:
-    Book()
-    {
+    Book() {
         title = new char[1];
         title[0] = '\0';
-
         isbn = new char[1];
         isbn[0] = '\0';
-
         authors = 1;
-        price = 0;
         copies = 1;
+        price = 0;
     }
 
-    Book(const char *t, int a, const char *i, float p, int c)
-    {
-        if (!isValidISBN(i))
-        {
-            cout << "Invalid ISBN" << endl;
-            exit(0);
+    Book(const char *t, int a, const char *i, float p, int c) {
+        authors = a;
+        copies = c;
+        price = p;
+
+        if (validISBN(i)) {
+            isbn = new char[strlen(i) + 1];
+            strcpy(isbn, i);
+        } else {
+            isbn = new char[1];
+            isbn[0] = '\0';
         }
 
         title = new char[strlen(t) + 1];
         strcpy(title, t);
-
-        isbn = new char[strlen(i) + 1];
-        strcpy(isbn, i);
-
-        authors = a;
-        price = p;
-        copies = c;
     }
 
-    Book(const Book &b)
-    {
+    Book(const Book &b) {
+        authors = b.authors;
+        copies = b.copies;
+        price = b.price;
+
         title = new char[strlen(b.title) + 1];
         strcpy(title, b.title);
 
         isbn = new char[strlen(b.isbn) + 1];
         strcpy(isbn, b.isbn);
-
-        authors = b.authors;
-        price = b.price;
-        copies = b.copies;
     }
 
-    void setTitle(const char *t)
-    {
+    bool validISBN(const char *i) {
+        int len = strlen(i);
+
+        if (len == 10) {
+            int sum = 0;
+            for (int k = 0; k < 10; k++) {
+                if (i[k] < '0' || i[k] > '9') return false;
+                int d = i[k] - '0';
+                sum += (k + 1) * d;
+            }
+            return (sum % 11 == 0);
+        }
+
+        if (len == 13) {
+            int sum = 0;
+            for (int k = 0; k < 13; k++) {
+                if (i[k] < '0' || i[k] > '9') return false;
+                int d = i[k] - '0';
+                if (k % 2 == 0) sum += d;
+                else sum += 3 * d;
+            }
+            return (sum % 10 == 0);
+        }
+
+        return false;
+    }
+
+    void setTitle(const char *t) {
         delete[] title;
         title = new char[strlen(t) + 1];
         strcpy(title, t);
     }
 
     void setAuthors(int a) { authors = a; }
-    void setPrice(float p) { price = p; }
-    void setCopies(int c) { copies = c; }
 
-    void setISBN(const char *i)
-    {
-        if (isValidISBN(i))
-        {
+    void setISBN(const char *i) {
+        if (validISBN(i)) {
             delete[] isbn;
             isbn = new char[strlen(i) + 1];
             strcpy(isbn, i);
         }
     }
 
-    const char* getTitle() { return title; }
+    void setPrice(float p) { price = p; }
+
+    void setCopies(int c) { copies = c; }
+
+    char* getTitle() { return title; }
     int getAuthors() { return authors; }
-    const char* getISBN() { return isbn; }
+    char* getISBN() { return isbn; }
     float getPrice() { return price; }
     int getCopies() { return copies; }
 
-    void display()
-    {
-        cout << "Title: " << title << endl;
-        cout << "Authors: " << authors << endl;
-        cout << "ISBN: " << isbn << endl;
-        cout << "Price: " << price << endl;
-        cout << "Copies: " << copies << endl;
+    void show() {
+        cout << title << endl;
+        cout << authors << endl;
+        cout << isbn << endl;
+        cout << price << endl;
+        cout << copies << endl;
+    }
+
+    ~Book() {
+        delete[] title;
+        delete[] isbn;
     }
 };
 
-int main()
-{
-    Book b1("CPP", 2, "9780306406157", 500.0, 5);
-    Book b2 = b1;
+int main() {
+    Book b1("CPP", 2, "0306406152", 500.5, 3);
+    b1.show();
 
-    b1.display();
-    cout << endl;
-    b2.display();
+    Book b2 = b1;
+    b2.show();
 
     return 0;
 }
