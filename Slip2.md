@@ -21,7 +21,7 @@ public:
 
 class TalkingInterface
 {
-public:
+private:
     void greet()
     {
         cout << "Hi" << endl;
@@ -34,48 +34,39 @@ public:
 
     void greet(string msg, int n)
     {
-        for (int i = 0; i < n; i++)
-        {
+        for(int i=0;i<n;i++)
             cout << msg << endl;
-        }
     }
 
     void Tables()
     {
-        for (int i = 1; i <= 10; i++)
+        for(int i=1;i<=10;i++)
         {
-            for (int j = 1; j <= 10; j++)
-            {
-                cout << i * j << " ";
-            }
+            for(int j=1;j<=10;j++)
+                cout << i*j << " ";
             cout << endl;
         }
     }
 
     void Tables(int n)
     {
-        for (int i = 1; i <= 10; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+        for(int i=1;i<=10;i++)
+            cout << n << " x " << i << " = " << n*i << endl;
     }
 
     void Tables(int n, int start)
     {
-        for (int i = start; i <= 10; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+        for(int i=start;i<=10;i++)
+            cout << n << " x " << i << " = " << n*i << endl;
     }
 
     void Tables(int n, int start, int end)
     {
-        for (int i = start; i <= end; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+        for(int i=start;i<=end;i++)
+            cout << n << " x " << i << " = " << n*i << endl;
     }
 
+public:
     void use(Person p)
     {
         cout << "Hello " << p.name << endl;
@@ -84,8 +75,8 @@ public:
         greet("hello", 10);
         Tables();
         Tables(2);
-        Tables(2, 3);
-        Tables(2, 3, 6);
+        Tables(2,3);
+        Tables(2,3,6);
     }
 };
 
