@@ -2,88 +2,55 @@ slip13
 #include <iostream>
 using namespace std;
 
-class message
-{
+class message {
 public:
-    void display()
-    {
+    void display() {
         cout << "Hi" << endl;
     }
 
-    void display(string msg)
-    {
-        cout << msg << endl;
+    void display(const char *str) {
+        cout << str << endl;
     }
 
-    void display(string msg, int n)
-    {
+    void display(const char *str, int n) {
         for (int i = 0; i < n; i++)
-        {
-            cout << msg << endl;
-        }
+            cout << str << endl;
     }
 };
 
-class tableinterface
-{
+class tableinterface {
 public:
-    void Tables()
-    {
+    void Tables() {
         for (int i = 1; i <= 10; i++)
-        {
-            for (int j = 1; j <= 10; j++)
-            {
-                cout << i * j << " ";
-            }
-            cout << endl;
-        }
+            cout << i << endl;
     }
 
-    void Tables(int n)
-    {
+    void Tables(int n) {
         for (int i = 1; i <= 10; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+            cout << n << " * " << i << " = " << n * i << endl;
     }
 
-    void Tables(int n, int start)
-    {
+    void Tables(int n, int start) {
         for (int i = start; i <= 10; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+            cout << n << " * " << i << " = " << n * i << endl;
     }
 
-    void Tables(int n, int start, int end)
-    {
+    void Tables(int n, int start, int end) {
         for (int i = start; i <= end; i++)
-        {
-            cout << n << " x " << i << " = " << n * i << endl;
-        }
+            cout << n << " * " << i << " = " << n * i << endl;
     }
 };
 
-int main()
-{
+int main() {
     message m;
-    tableinterface t;
-
     m.display();
     m.display("Namaste");
     m.display("hello", 10);
 
-    cout << endl;
-
+    tableinterface t;
     t.Tables();
-    cout << endl;
-
     t.Tables(2);
-    cout << endl;
-
     t.Tables(2, 3);
-    cout << endl;
-
     t.Tables(2, 3, 6);
 
     return 0;
