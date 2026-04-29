@@ -27,13 +27,15 @@ public:
     }
 
     Message operator+(Message m) {
-        Message temp;
-        delete[] temp.str;
-        temp.len = len + m.len;
-        temp.str = new char[temp.len + 1];
-        strcpy(temp.str, str);
-        strcat(temp.str, m.str);
-        return temp;
+        int newlen = len + m.len;
+        char *temp = new char[newlen + 1];
+
+        strcpy(temp, str);
+        strcat(temp, m.str);
+
+        Message res(temp);
+        delete[] temp;
+        return res;
     }
 
     void show() {
@@ -55,7 +57,6 @@ int main() {
 
     return 0;
 }
-
 DBMS
 
 CREATE DATABASE bankdb7;
