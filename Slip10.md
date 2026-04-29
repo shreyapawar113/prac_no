@@ -3,77 +3,69 @@ slip10
 #include <cstring>
 using namespace std;
 
-class Account
-{
-private:
-    int acc_no;
-    string acc_type;
+class account {
+    int accno;
+    char type[20];
     long amount;
-    string owner;
-
+    char name[50];
     static int counter;
 
 public:
-    Account()
-    {
-        counter++;
-        acc_no = 820000 + counter;
+    account() {
+        accno = 820000 + counter++;
+        amount = 0;
+        strcpy(type, "saving");
+        strcpy(name, "");
     }
 
-    void setData(string type, long amt, string name)
-    {
-        acc_type = type;
-        amount = amt;
-        owner = name;
+    void setType(const char *t) {
+        strcpy(type, t);
     }
 
-    string getType() { return acc_type; }
+    void setAmount(long a) {
+        amount = a;
+    }
+
+    void setName(const char *n) {
+        strcpy(name, n);
+    }
+
+    int getAccNo() { return accno; }
+    char* getType() { return type; }
     long getAmount() { return amount; }
-    string getOwner() { return owner; }
+    char* getName() { return name; }
 
-    void display()
-    {
-        cout << "Account No: " << acc_no << endl;
-        cout << "Owner: " << owner << endl;
-        cout << "Type: " << acc_type << endl;
-        cout << "Balance: " << amount << endl;
-        cout << "------------------------" << endl;
+    void show() {
+        cout << accno << endl;
+        cout << name << endl;
+        cout << type << endl;
+        cout << amount << endl;
     }
 };
 
-int Account::counter = 0;
+int account::counter = 1;
 
-int main()
-{
-    Account acc[5];
-
-    string type, name;
+int main() {
+    account a[5];
+    char name[50], type[20];
     long amt;
 
-    for (int i = 0; i < 5; i++)
-    {
-        cout << "Enter Owner Name: ";
+    for (int i = 0; i < 5; i++) {
         cin >> name;
-
-        cout << "Enter Account Type (saving/current/fixed/recurring): ";
         cin >> type;
-
-        cout << "Enter Initial Amount: ";
         cin >> amt;
 
-        acc[i].setData(type, amt, name);
+        a[i].setName(name);
+        a[i].setType(type);
+        a[i].setAmount(amt);
     }
 
-    cout << "\nAccount Details:\n";
-
-    for (int i = 0; i < 5; i++)
-    {
-        acc[i].display();
+    for (int i = 0; i < 5; i++) {
+        a[i].show();
     }
 
     return 0;
 }
-
 DBMS
 
 CREATE DATABASE bankdb6;
