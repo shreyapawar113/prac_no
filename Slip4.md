@@ -13,11 +13,11 @@ private:
     int len;
 
 public:
-    Message(const char *m = "")
+    Message(const char *m="")
     {
         len = strlen(m);
-        msg = new char[len + 1];
-        strcpy(msg, m);
+        msg = new char[len+1];
+        strcpy(msg,m);
     }
 
     void display()
@@ -25,7 +25,7 @@ public:
         cout << msg << endl;
     }
 
-    friend void encrypt(Message &, Key);
+    friend void encrypt(Message&, Key);
 };
 
 class Key
@@ -35,55 +35,46 @@ private:
     int len;
 
 public:
-    Key(const char *k)
+    Key(const char *k="")
     {
-        strcpy(key, k);
         len = strlen(k);
-    }
-
-    int isValid()
-    {
-        if (len < 8 || len >= 30)
-            return 0;
-
-        int hasDigit = 0, hasUpper = 0;
-
-        for (int i = 0; i < len; i++)
+        if(len>=8 && len<30)
         {
-            if (isdigit(key[i]))
-                hasDigit = 1;
-            if (isupper(key[i]))
-                hasUpper = 1;
+            int hasDigit=0, hasUpper=0;
+            for(int i=0;i<len;i++)
+            {
+                if(isdigit(k[i])) hasDigit=1;
+                if(isupper(k[i])) hasUpper=1;
+            }
+            if(hasDigit && hasUpper)
+                strcpy(key,k);
+            else
+                strcpy(key,"Default1A");
         }
-
-        return hasDigit && hasUpper;
+        else
+            strcpy(key,"Default1A");
     }
 
-    friend void encrypt(Message &, Key);
+    friend void encrypt(Message&, Key);
 };
 
 void encrypt(Message &m, Key k)
 {
-    if (!k.isValid())
+    int klen = strlen(k.key);
+    for(int i=0;i<m.len;i++)
     {
-        cout << "Invalid Key" << endl;
-        return;
-    }
-
-    for (int i = 0; i < m.len; i++)
-    {
-        m.msg[i] = m.msg[i] + (k.key[i % k.len] % 5);
+        m.msg[i] = m.msg[i] + k.key[i % klen] % 5;
     }
 }
 
 int main()
 {
-    Message m("HELLO WORLD");
+    Message m("HelloWorld");
     Key k("Abcdef12");
 
-    encrypt(m, k);
+    encrypt(m,k);
     m.display();
-    
+
     return 0;
 }
 
