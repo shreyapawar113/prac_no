@@ -1,64 +1,45 @@
 slip 6
+
 #include <iostream>
 using namespace std;
 
-class Complex
-{
-private:
+class Complex {
     float real, imag;
-
 public:
-    Complex()
-    {
+    Complex() {
         real = 0;
         imag = 0;
     }
-
-    Complex(float r, float i)
-    {
+    Complex(float r, float i) {
         real = r;
         imag = i;
     }
-
-    Complex operator+(Complex c)
-    {
+    Complex operator+(Complex c) {
         return Complex(real + c.real, imag + c.imag);
     }
-
-    Complex operator-(Complex c)
-    {
+    Complex operator-(Complex c) {
         return Complex(real - c.real, imag - c.imag);
     }
-
-    Complex operator*(Complex c)
-    {
-        return Complex(
-            real * c.real - imag * c.imag,
-            real * c.imag + imag * c.real
-        );
+    Complex operator*(Complex c) {
+        return Complex(real * c.real - imag * c.imag,
+                       real * c.imag + imag * c.real);
     }
-
-    void display()
-    {
-        cout << real << " + i" << imag << endl;
+    void show() {
+        cout << real << "+" << imag << "i" << endl;
     }
 };
 
-int main()
-{
-    Complex c1(2, 3), c2(4, 5), c3;
+int main() {
+    Complex c1(3, 2), c2(1, 4), c3;
 
-    cout << "Addition: ";
     c3 = c1 + c2;
-    c3.display();
+    c3.show();
 
-    cout << "Subtraction: ";
     c3 = c1 - c2;
-    c3.display();
+    c3.show();
 
-    cout << "Multiplication: ";
     c3 = c1 * c2;
-    c3.display();
+    c3.show();
 
     return 0;
 }
