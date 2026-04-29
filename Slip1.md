@@ -1,18 +1,18 @@
 slip 1 cpp
-
-#include<iostream>
+#include <iostream>
 using namespace std;
 
 class Fraction
 {
+private:
     int numerator;
     int denominator;
 
     int gcd(int a, int b)
     {
-        if(b==0)
+        if (b == 0)
             return a;
-        return gcd(b, a%b);
+        return gcd(b, a % b);
     }
 
 public:
@@ -24,21 +24,29 @@ public:
 
     Fraction(int n, int d)
     {
-        int g = gcd(n,d);
-        numerator = n/g;
-        denominator = d/g;
+        if (d == 0)
+        {
+            numerator = 0;
+            denominator = 1;
+        }
+        else
+        {
+            int g = gcd(n, d);
+            numerator = n / g;
+            denominator = d / g;
+        }
     }
 
     void display()
     {
-        cout<<numerator<<"/"<<denominator<<endl;
+        cout << numerator << "/" << denominator << endl;
     }
 };
 
 int main()
 {
     Fraction f1;
-    Fraction f2(8,4);
+    Fraction f2(8, 12);
 
     f1.display();
     f2.display();
