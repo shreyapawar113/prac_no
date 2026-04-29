@@ -1,0 +1,154 @@
+slip 15
+#include <iostream>
+using namespace std;
+
+class time
+{
+private:
+    int h, m, s;
+
+public:
+    void settime(int hh, int mm, int ss)
+    {
+        h = hh;
+        m = mm;
+        s = ss;
+    }
+
+    void ShowTime()
+    {
+        cout << h << ":" << m << ":" << s << endl;
+    }
+
+    time add(time t)
+    {
+        time temp;
+
+        temp.s = s + t.s;
+        temp.m = m + t.m + temp.s / 60;
+        temp.s = temp.s % 60;
+
+        temp.h = h + t.h + temp.m / 60;
+        temp.m = temp.m % 60;
+
+        return temp;
+    }
+};
+
+int main()
+{
+    time t1, t2, t3;
+
+    t1.settime(2, 45, 50);
+    t2.settime(3, 20, 30);
+
+    t3 = t1.add(t2);
+
+    cout << "Time 1: ";
+    t1.ShowTime();
+
+    cout << "Time 2: ";
+    t2.ShowTime();
+
+    cout << "After Addition: ";
+    t3.ShowTime();
+
+    return 0;
+}CREATE DATABASE traveldb5;
+USE traveldb5;
+
+CREATE TABLE Bus (
+    bus_no INT,
+    capacity INT,
+    depot_name VARCHAR(20)
+);
+
+CREATE TABLE Route (
+    route_no INT,
+    source VARCHAR(20),
+    destination VARCHAR(20),
+    no_of_stations INT
+);
+
+CREATE TABLE Bus_Route (
+    bus_no INT,
+    route_no INT
+);
+INSERT INTO Bus VALUES
+(201, 80, 'Pimpri Depot'),
+(202, 120, 'Station Depot'),
+(203, 90, 'Airport Depot');
+
+INSERT INTO Route VALUES
+(1, 'Pimpri', 'Chinchwad', 8),
+(2, 'Station', 'Airport', 12);
+
+INSERT INTO Bus_Route VALUES
+(201, 1),
+(202, 2),
+(203, 2);
+
+a)
+
+CREATE FUNCTION busesPimpriChinchwad()
+RETURNS VARCHAR(500)
+DETERMINISTIC
+BEGIN
+    DECLARE result VARCHAR(500);
+
+    SELECT GROUP_CONCAT(B.bus_no, ' ', B.capacity, ' ', B.depot_name)
+    INTO result
+    FROM Bus B
+    JOIN Bus_Route BR ON B.bus_no = BR.bus_no
+    JOIN Route R ON BR.route_no = R.route_no
+    WHERE R.source = 'Pimpri' AND R.destination = 'Chinchwad';
+
+    RETURN result;
+END $$
+
+b)
+
+
+CREATE TRIGGER check_route
+BEFORE INSERT ON Route
+FOR EACH ROW
+BEGIN
+    IF NEW.route_no >= 1000 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Route number too large';
+    END IF;
+END $$
+
+
+c)
+
+CREATE PROCEDURE stationToAirport()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE bno INT;
+    DECLARE cap INT;
+    DECLARE depot VARCHAR(20);
+
+    DECLARE cur CURSOR FOR
+        SELECT B.bus_no, B.capacity, B.depot_name
+        FROM Bus B
+        JOIN Bus_Route BR ON B.bus_no = BR.bus_no
+        JOIN Route R ON BR.route_no = R.route_no
+        WHERE R.source = 'Station' AND R.destination = 'Airport';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO bno, cap, depot;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT bno, cap, depot;
+    END LOOP;
+
+    CLOSE cur;
+END $$
