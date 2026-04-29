@@ -21,7 +21,7 @@ public:
 
 class TalkingInterface
 {
-private:
+public:
     void greet()
     {
         cout << "Hi" << endl;
@@ -76,13 +76,12 @@ private:
         }
     }
 
-public:
-    void useFunctions()
+    void use(Person p)
     {
+        cout << "Hello " << p.name << endl;
         greet();
         greet("Namaste");
         greet("hello", 10);
-
         Tables();
         Tables(2);
         Tables(2, 3);
@@ -94,10 +93,9 @@ int main()
 {
     Person p("Ujwal");
     TalkingInterface t;
-    t.useFunctions();
+    t.use(p);
     return 0;
 }
-
 Slip 2 DBMS
 
 CREATE DATABASE travel;
