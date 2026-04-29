@@ -2,41 +2,32 @@ slip 15
 #include <iostream>
 using namespace std;
 
-class time
-{
-private:
+class time {
     int h, m, s;
 
 public:
-    void settime(int hh, int mm, int ss)
-    {
+    void settime(int hh, int mm, int ss) {
         h = hh;
         m = mm;
         s = ss;
     }
 
-    void ShowTime()
-    {
+    void ShowTime() {
         cout << h << ":" << m << ":" << s << endl;
     }
 
-    time add(time t)
-    {
+    time add(time t) {
         time temp;
-
         temp.s = s + t.s;
         temp.m = m + t.m + temp.s / 60;
-        temp.s = temp.s % 60;
-
+        temp.s %= 60;
         temp.h = h + t.h + temp.m / 60;
-        temp.m = temp.m % 60;
-
+        temp.m %= 60;
         return temp;
     }
 };
 
-int main()
-{
+int main() {
     time t1, t2, t3;
 
     t1.settime(2, 45, 50);
@@ -44,17 +35,17 @@ int main()
 
     t3 = t1.add(t2);
 
-    cout << "Time 1: ";
     t1.ShowTime();
-
-    cout << "Time 2: ";
     t2.ShowTime();
-
-    cout << "After Addition: ";
     t3.ShowTime();
 
     return 0;
-}CREATE DATABASE traveldb5;
+}
+
+
+
+DBMS
+CREATE DATABASE traveldb5;
 USE traveldb5;
 
 CREATE TABLE Bus (
