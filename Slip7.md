@@ -3,73 +3,59 @@ Slip7
 #include <cstring>
 using namespace std;
 
-class invertdata
-{
+class invertdata {
 public:
-    int invert(int n)
-    {
+    int invert(int n) {
         int rev = 0;
-        while (n > 0)
-        {
-            rev = rev * 10 + (n % 10);
-            n = n / 10;
+        while (n > 0) {
+            rev = rev * 10 + n % 10;
+            n /= 10;
         }
         return rev;
     }
 
-    char* invert(char *str)
-    {
+    char* invert(char *str) {
         int len = strlen(str);
         char *rev = new char[len + 1];
-
-        for (int i = 0; i < len; i++)
-        {
+        for (int i = 0; i < len; i++) {
             rev[i] = str[len - i - 1];
         }
         rev[len] = '\0';
-
         return rev;
     }
 
-    void invert(int *arr, int n)
-    {
-        int temp;
-        for (int i = 0; i < n / 2; i++)
-        {
-            temp = arr[i];
+    void invert(int *arr) {
+        int n;
+        cin >> n;
+        for (int i = 0; i < n / 2; i++) {
+            int temp = arr[i];
             arr[i] = arr[n - i - 1];
             arr[n - i - 1] = temp;
         }
+        for (int i = 0; i < n; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
     }
 };
 
-int main()
-{
+int main() {
     invertdata obj;
 
     int num = 5438;
-    cout << "Inverted Integer: " << obj.invert(num) << endl;
+    cout << obj.invert(num) << endl;
 
     char str[] = "comp";
-    char *revStr = obj.invert(str);
-    cout << "Reversed String: " << revStr << endl;
+    char *revstr = obj.invert(str);
+    cout << revstr << endl;
 
-    int arr[] = {5, 7, 12, 4};
-    int size = 4;
-
-    obj.invert(arr, size);
-
-    cout << "Reversed Array: ";
-    for (int i = 0; i < size; i++)
-    {
-        cout << arr[i] << " ";
-    }
-
-    delete[] revStr;
+    int n = 4;
+    int arr[4] = {5, 7, 12, 4};
+    cout << n << endl;
+    obj.invert(arr);
 
     return 0;
 }
-
 DBMS
 CREATE DATABASE bankdb4;
 USE bankdb4;
