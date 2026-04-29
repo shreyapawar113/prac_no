@@ -2,9 +2,7 @@ SLip 12
 #include <iostream>
 using namespace std;
 
-class cuboidSolid
-{
-private:
+class cuboidSolid {
     float length, breadth, height, mass;
 
 public:
@@ -18,34 +16,33 @@ public:
     float getHeight() { return height; }
     float getMass() { return mass; }
 
-    float getVolume()
-    {
+    float getVolume() {
         return length * breadth * height;
     }
 
-    float getSurfaceArea()
-    {
+    float getSurfaceArea() {
         return 2 * (length * breadth + breadth * height + height * length);
     }
 
-    float getDensity()
-    {
+    float getDensity() {
         return mass / getVolume();
     }
 };
 
-int main()
-{
+int main() {
     cuboidSolid c;
 
-    c.setLength(5);
-    c.setBreadth(4);
-    c.setHeight(3);
-    c.setMass(120);
+    float l, b, h, m;
+    cin >> l >> b >> h >> m;
 
-    cout << "Volume: " << c.getVolume() << endl;
-    cout << "Surface Area: " << c.getSurfaceArea() << endl;
-    cout << "Density: " << c.getDensity() << endl;
+    c.setLength(l);
+    c.setBreadth(b);
+    c.setHeight(h);
+    c.setMass(m);
+
+    cout << c.getVolume() << endl;
+    cout << c.getSurfaceArea() << endl;
+    cout << c.getDensity() << endl;
 
     return 0;
 }
