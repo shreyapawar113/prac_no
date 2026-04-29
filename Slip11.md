@@ -3,59 +3,55 @@ slip 11
 #include <cstring>
 using namespace std;
 
-class Message
-{
-private:
-    char *msg;
+class Message {
+    char *str;
     int len;
 
 public:
-    Message(const char *m = "")
-    {
-        len = strlen(m);
-        msg = new char[len + 1];
-        strcpy(msg, m);
+    Message() {
+        len = 0;
+        str = new char[1];
+        str[0] = '\0';
     }
 
-    Message(const Message &m)
-    {
+    Message(const char *s) {
+        len = strlen(s);
+        str = new char[len + 1];
+        strcpy(str, s);
+    }
+
+    Message(const Message &m) {
         len = m.len;
-        msg = new char[len + 1];
-        strcpy(msg, m.msg);
+        str = new char[len + 1];
+        strcpy(str, m.str);
     }
 
-    Message operator+(Message m)
-    {
+    Message operator+(Message m) {
         Message temp;
+        delete[] temp.str;
         temp.len = len + m.len;
-
-        temp.msg = new char[temp.len + 1];
-        strcpy(temp.msg, msg);
-        strcat(temp.msg, m.msg);
-
+        temp.str = new char[temp.len + 1];
+        strcpy(temp.str, str);
+        strcat(temp.str, m.str);
         return temp;
     }
 
-    void display()
-    {
-        cout << msg << endl;
+    void show() {
+        cout << str << endl;
     }
 
-    ~Message()
-    {
-        delete[] msg;
+    ~Message() {
+        delete[] str;
     }
 };
 
-int main()
-{
+int main() {
     Message m1("Hello ");
     Message m2("World");
     Message m3;
 
     m3 = m1 + m2;
-
-    m3.display();
+    m3.show();
 
     return 0;
 }
